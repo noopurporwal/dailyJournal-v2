@@ -10,11 +10,13 @@ const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pelle
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
 const app = express();
-const posts=[];
+const posts = [];
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static("public"));
 
 mongoose.connect("mongodb+srv://noopur-admin:test123@cluster0-1ua1g.mongodb.net/test?retryWrites=true&w=majority", {
@@ -22,31 +24,37 @@ mongoose.connect("mongodb+srv://noopur-admin:test123@cluster0-1ua1g.mongodb.net/
   useUnifiedTopology: true
 });
 
-const postSchema=new mongoose.Schema({
-  postTitle:String,
-  postBody:String
+const postSchema = new mongoose.Schema({
+  postTitle: String,
+  postBody: String
 })
 
 const Post = mongoose.model("post", postSchema)
 
 app.get("/", function(req, res) {
 
-Post.find({}, function(err, foundPosts){
-  if(!err){
-    res.render("home", {
-      startingContent:homeStartingContent,
-      posts:foundPosts});
-  }
-}) })
+  Post.find({}, function(err, foundPosts) {
+    if (!err) {
+      res.render("home", {
+        startingContent: homeStartingContent,
+        posts: foundPosts
+      });
+    }
+  })
+})
 
 
 
-app.get("/about", function(req, res){
-  res.render("about", {aboutContent: aboutContent});
+app.get("/about", function(req, res) {
+  res.render("about", {
+    aboutContent: aboutContent
+  });
 })
 
 app.get("/contact", function(req, res) {
-  res.render("contact", { contactContent: contactContent});
+  res.render("contact", {
+    contactContent: contactContent
+  });
 })
 
 app.get("/compose", function(req, res) {
@@ -54,15 +62,15 @@ app.get("/compose", function(req, res) {
 })
 
 app.post("/compose", function(req, res) {
-  const postTitle=req.body.postTitle;
-  const postBody= req.body.postBody;
+  const postTitle = req.body.postTitle;
+  const postBody = req.body.postBody;
 
   const newPost = new Post({
     postTitle: req.body.postTitle,
     postBody: req.body.postBody
   });
-  newPost.save(function(err){
-    if(!err) {
+  newPost.save(function(err) {
+    if (!err) {
       res.redirect("/");
     }
   });
@@ -71,16 +79,25 @@ app.post("/compose", function(req, res) {
 })
 
 app.get("/posts/:postId", function(req, res) {
-  const requestedPostId=req.params.postId;
+  const requestedPostId = req.params.postId;
 
-  Post.findOne({_id:requestedPostId}, function(err, foundPost) {
-    if(!err){
-        res.render("post", {post:foundPost});
+  Post.findOne({
+    _id: requestedPostId
+  }, function(err, foundPost) {
+    if (!err) {
+      res.render("post", {
+        post: foundPost
+      });
     }
   })
 
-  })
+})
 
-  app.listen(port, function() {
-    console.log("The server has started successfully");
-  })
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
+app.listen(port, function() {
+  console.log("The server has started successfully");
+})
