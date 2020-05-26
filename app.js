@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://noopur-admin:test123@cluster0-1ua1g.mongodb.net/test?retryWrites=true&w=majority", {
+mongoose.connect("", {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
